@@ -1,56 +1,30 @@
-﻿import pandas as pd
+import pandas as pd
 import streamlit as st
-import numpy as np
 import altair as alt
 
-# AULA 4
-# Exemplo 1
-st.write('Write and *Magic*')
-
-#Exemplo 2
-st.write(pd.DataFrame({
-    'Coluna A': [1, 2,3,4,5],
-    'Coluna B': ["Cachorro", "Gato", "Cavalo","Vaca","Zebra"],
-}))
-
-st.write(pd.DataFrame({
-    'Coluna A': [1,2,3,4,5],
-    'Coluna B': ["Dog", "Cat", "Horse","Cow","Zebra"],
-}))
-
-# #Exemplo 3
-array = [1, 2, "abc", "Martin", True]
-st.write(array)
-
-# #Exemplo 4
-array = [1,2, 'abc', 'Martin', True]
-st.write('aqui teremos uma array:', array)
-
-
-#Exemplo 5
-df = pd.DataFrame(
-    np.random.randn(200, 3),
-    columns=['a', 'b', 'c']
+df = pd.read_excel(
+    io = 'faturamento.xlsx',
+    engine='openpyxl',
+    sheet_name='flow',
+    usecols='A:B',
+    nrows=15,
 )
 
-c = alt.Chart(df).mark_circle().encode(
-    x='a', y='b', size='c', color='c', tooltip=['a', 'b', 'c']
+graf_area = alt.Chart(df).mark_area(
+    line={'color':'black'},
+    color='gray'
+).encode(
+    x = 'Year:T',
+    y = 'Value:Q'
 )
 
-st.write(df)
-st.write(c)
+rotulo = graf_area.mark_text(
+    align='center',
+    baseline='middle',
+    color='black',    
+    size=14,
+    dy=-18
+).encode(text='Value')
 
-
-
-# AULA 3
-# df = pd.DataFrame({'col1': [1, 2, 3]})
-# df
-
-# '''
-# Com o magic você pode escrever diretamente no texto!
-# '''
-
-# x = 'Hello World!'
-# x
-
-
+st.subheader('VALORES ANUAIS')
+st.altair_chart(graf_area+rotulo, use_container_width=True)
